@@ -41,8 +41,12 @@ RCT_REMAP_METHOD(decode,
     [resultObj setObject:@"File does not exist" forKey:errorMessageKey];
     return;
   }
+    
+  NSData* data = UIImageJPEGRepresentation(imageToDecode, 0.8);
+  CGDataProviderRef imgDataProvider = CGDataProviderCreateWithCFData((__bridge CFDataRef) data);
+  CGImageRef imageRef = CGImageCreateWithJPEGDataProvider(imgDataProvider, NULL, true, kCGRenderingIntentDefault);
   
-  ZXLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:imageToDecode];
+  ZXLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:imageRef];
   ZXBinaryBitmap *bitmap = [ZXBinaryBitmap binaryBitmapWithBinarizer:[ZXHybridBinarizer binarizerWithSource:source]];
   
   NSError *error = nil;
